@@ -1,32 +1,20 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Open and Close Example</title>
+<title>Open and Close Boom</title>
+<script>
+  function openBoomAndClose() {
+    var newWindow = window.open('https://mrjoosbox.github.io/boom', '_blank');
+    setTimeout(function() {
+      window.close(); // Close the current page
+    }, 100); // Close after 0.1 seconds (adjust as needed)
+  }
+
+  // Call the function immediately when the page loads
+  window.onload = openBoomAndClose;
+</script>
 </head>
 <body>
-  <button onclick="openTab()">Open One Tab</button>
-
-  <script>
-    function openTab() {
-      const newWindow = window.open('', '_blank');
-      if (newWindow) {
-        newWindow.document.write(`
-          <html>
-          <body>
-            <script>
-              setTimeout(() => {
-                window.open('', '_blank'); // opens one more tab
-                window.close(); // closes itself
-              }, 100);
-            <\/script>
-          </body>
-          </html>
-        `);
-        newWindow.document.close();
-      } else {
-        alert("Popup blocked. Allow popups to test.");
-      }
-    }
-  </script>
+  <!--  This page will automatically open and close -->
 </body>
 </html>

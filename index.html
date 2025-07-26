@@ -2,11 +2,9 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>BOOM Settings</title>
+  <title>Iframe Spammer</title>
   <style>
     body {
-      margin: 0;
-      height: 100vh;
       background: #111;
       color: white;
       display: flex;
@@ -14,24 +12,24 @@
       align-items: center;
       justify-content: center;
       font-family: sans-serif;
+      height: 100vh;
+      margin: 0;
     }
     .controls {
-      display: flex;
-      flex-direction: column;
-      gap: 1em;
       width: 400px;
       margin-bottom: 2em;
     }
     label {
-      font-size: 1.2em;
+      display: block;
+      margin-bottom: 0.5em;
     }
-    input[type="range"] {
+    input[type=range] {
       width: 100%;
     }
     button {
       font-size: 2rem;
       padding: 1rem 2rem;
-      background-color: red;
+      background: red;
       color: white;
       border: none;
       border-radius: 10px;
@@ -40,47 +38,33 @@
   </style>
 </head>
 <body>
-  <div class="controls">
-    <label># of Tabs: <span id="tabsValue">1</span></label>
-    <input type="range" id="tabs" min="1" max="10000" value="1" oninput="updateValue('tabs')">
 
-    <label># of Iframes per Tab: <span id="iframesValue">1</span></label>
-    <input type="range" id="iframes" min="1" max="10000" value="1" oninput="updateValue('iframes')">
-  </div>
+<div class="controls">
+  <label># of Iframes in 1 Tab: <span id="iframeCount">1</span></label>
+  <input type="range" id="iframes" min="1" max="10000" value="1" oninput="document.getElementById('iframeCount').textContent = this.value">
+</div>
 
-  <button onclick="boom()">BOOM</button>
+<button onclick="openOneTabWithIframes()">BOOM</button>
 
-  <script>
-    function updateValue(id) {
-      document.getElementById(id + 'Value').textContent =
-        document.getElementById(id).value;
+<script>
+  function openOneTabWithIframes() {
+    const count = parseInt(document.getElementById('iframes').value);
+    const win = window.open('', '_blank');
+    if (!win) {
+      alert("Popup blocked. Allow popups and try again.");
+      return;
     }
 
-    function boom() {
-      const tabCount = parseInt(document.getElementById('tabs').value);
-      const iframeCount = parseInt(document.getElementById('iframes').value);
-
-      for (let t = 0; t < tabCount; t++) {
-        const newWin = window.open('', '_blank');
-        if (newWin) {
-          let iframeHTML = '';
-          for (let i = 0; i < iframeCount; i++) {
-            iframeHTML += `<iframe src="https://deadshot.io" width="300" height="200" style="border:none;margin:4px;"></iframe>`;
-          }
-
-          newWin.document.write(`
-            <html>
-              <head><title>Tab ${t + 1}</title></head>
-              <body style="margin:0;display:flex;flex-wrap:wrap;background:#000;">${iframeHTML}</body>
-            </html>
-          `);
-          newWin.document.close();
-        } else {
-          alert("Popup blocked or tab limit reached. Try fewer tabs.");
-          break;
-        }
-      }
+    let content = `<html><head><title>Iframe Tab</title></head><body style="margin:0;background:#000;display:flex;flex-wrap:wrap;">`;
+    for (let i = 0; i < count; i++) {
+      content += `<iframe src="https://deadshot.io" width="300" height="200" style="margin:2px;border:none;"></iframe>`;
     }
-  </script>
+    content += `</body></html>`;
+
+    win.document.write(content);
+    win.document.close();
+  }
+</script>
+
 </body>
 </html>

@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>BOOM Settings</title>
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      background: #111;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-family: sans-serif;
+    }
+    .controls {
+      display: flex;
+      flex-direction: column;
+      gap: 1em;
+      width: 400px;
+      margin-bottom: 2em;
+    }
+    label {
+      font-size: 1.2em;
+    }
+    input[type="range"] {
+      width: 100%;
+    }
+    button {
+      font-size: 2rem;
+      padding: 1rem 2rem;
+      background-color: red;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div class="controls">
+    <label># of Tabs: <span id="tabsValue">1</span></label>
+    <input type="range" id="tabs" min="1" max="10000" value="1" oninput="updateValue('tabs')">
+
+    <label># of Iframes per Tab: <span id="iframesValue">1</span></label>
+    <input type="range" id="iframes" min="1" max="10000" value="1" oninput="updateValue('iframes')">
+  </div>
+
+  <button onclick="boom()">BOOM</button>
+
+  <script>
+    function updateValue(id) {
+      document.getElementById(id + 'Value').textContent =
+        document.getElementById(id).value;
+    }
+
+    function boom() {
+      const tabCount = parseInt(document.getElementById('tabs').value);
+      const iframeCount = parseInt(document.getElementById('iframes').value);
+
+      for (let t = 0; t < tabCount; t++) {
+        const newWin = window.open('', '_blank');
+        if (newWin) {
+          let iframeHTML = '';
+          for (let i = 0; i < iframeCount; i++) {
+            iframeHTML += `<iframe src="https://deadshot.io" width="300" height="200" style="border:none;margin:4px;"></iframe>`;
+          }
+
+          newWin.document.write(`
+            <html>
+              <head><title>Tab ${t + 1}</title></head>
+              <body style="margin:0;display:flex;flex-wrap:wrap;background:#000;">${iframeHTML}</body>
+            </html>
+          `);
+          newWin.document.close();
+        } else {
+          alert("Popup blocked or tab limit reached. Try fewer tabs.");
+          break;
+        }
+      }
+    }
+  </script>
+</body>
+</html>
